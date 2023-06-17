@@ -19,7 +19,7 @@ class Publisher(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(50), nullable=False)
 
-    def __str__(self):
+    def __repr__(self):
         return f"Publisher: {self.name}"
 
 
@@ -31,18 +31,21 @@ class Book(Base):
     id_publisher = Column(Integer, ForeignKey("publishers.id", ondelete="CASCADE"))
 
     publisher = relationship("Publisher", backref="books")
+    stock_shop = relationship("Shop", secondary="stocks", back_populates="stock_book")
 
-    def __str__(self):
+    def __repr__(self):
         return f"Book: {self.title}"
 
 
 class Shop(Base):
     __tablename__ = "shops"
 
-    id = Column(Integer(), primary_key=True)
+    id = Column(Integer, primary_key=True)
     name = Column(String(50), nullable=False)
 
-    def __str__(self):
+    stock_book = relationship("Book", secondary="stocks", back_populates="stock_shop")
+
+    def __repr__(self):
         return f"Shop: {self.name}"
 
 
@@ -53,9 +56,6 @@ class Stock(Base):
     id_book = Column(Integer, ForeignKey("books.id"), nullable=False)
     id_shop = Column(Integer, ForeignKey("shops.id"), nullable=False)
     count = Column(Integer)
-
-    book = relationship("Book", backref="stocks")
-    shop = relationship("Shop", backref="stocks")
 
 
 class Sale(Base):

@@ -7,7 +7,7 @@ from models import Book, Publisher, Sale, Shop, Stock, create_tables
 
 
 DSN = f"postgresql://postgres:baraguz@localhost:5432/books_db"
-engine = sqlalchemy.create_engine(DSN, echo=True)
+engine = sqlalchemy.create_engine(DSN)
 
 create_tables(engine)
 
@@ -42,7 +42,17 @@ def find_publisher(id=None, name=None):
         print(f"{name_publisher} | {title} | {shop} | {price} | {date}")
 
 
+def test():
+    query = session.query(Book)
+    records = query.all()
+
+    for i in records:
+        print(i.title, i.publisher.name, i.stock_shop)
+
+
 session.close()
 
 if __name__ == "__main__":
     find_publisher(name=input("Введите имя автора: "), id=input("Введите ID автора: "))
+
+    # test()
