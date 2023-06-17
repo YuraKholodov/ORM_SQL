@@ -26,7 +26,7 @@ with open("tests_data.json", encoding="utf-8") as file:
         session.commit()
 
 
-def find_publisher(id=None, name=None):
+def find_publisher(data):
     """Функция поиска Автора"""
     query = session.query(
         Publisher.name, Book.title, Shop.name, Sale.price * Stock.count, Sale.date_sale
@@ -36,7 +36,10 @@ def find_publisher(id=None, name=None):
     query = query.join(Shop, Shop.id == Stock.id_shop)
     query = query.join(Sale, Sale.id_stock == Stock.id)
 
-    records = query.filter(or_(Publisher.name == name, Publisher.id == id))
+    if data.isdigit():
+        records = query.filter(Publisher.id == data)
+    else:
+        records = query.filter(Publisher.name == data)
 
     for name_publisher, title, shop, price, date in records:
         print(f"{name_publisher} | {title} | {shop} | {price} | {date}")
@@ -53,6 +56,6 @@ def test():
 session.close()
 
 if __name__ == "__main__":
-    find_publisher(name=input("Введите имя автора: "), id=input("Введите ID автора: "))
+    find_publisher(data=input("Введите имя автора или ID автора: "))
 
     # test()
